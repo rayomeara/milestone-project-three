@@ -1,0 +1,21 @@
+pip3 install Flask
+pip3 install flask-pymongo
+pip3 install dnspython
+
+
+to locate .bashrc folder
+        cd ~
+
+
+
+put in an env.py file:
+        import os
+        os.environ.setdefault('MONGO_URI', 'your uri here')
+
+
+Then in your main python file you have to do this:
+        import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
+        app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'ENV Value Not Loaded')
+
+Put the env.py in .gitgnore though
+and when you push to heroku you have to remove the import env or comment it out. You put the URI in the config vars in heroku. (edited)
