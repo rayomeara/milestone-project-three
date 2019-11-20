@@ -13,14 +13,24 @@ mongo = PyMongo(app)
 @app.route('/')
 @app.route('/get_bookings')
 def get_bookings():
-    return render_template("bookings.html", bookings=mongo.db.booking.find(), countries=mongo.db.countries.find())
+    return render_template("bookings.html", bookings=mongo.db.booking.find(), countries=mongo.db.country.find())
 
-@app.route("/add_booking")
+
+@app.route("/add_booking", methods=['POST'])
 def add_booking():
-    return render_template('addbooking.html')
+    country = request.form.get('destination')
+    return render_template('addbooking.html',
+                            country=country,
+                            flights=mongo.db.flight.find({'country_to': country}),
+                            hotels=mongo.db.hotel.find({'country': country}))
 
-#@app.route("/insert_booking", methods=['POST'])
-#def insert_booking():
+
+@app.route("/insert_booking", methods=['POST'])
+def insert_booking():
+    booking = mongo.db.booking
+    booking.insert_one(request.form.to_dict())
+    return redirect(url_for('get_bookings'))
+
 
 @app.route('/edit_booking/<booking_id>')
 def edit_booking(booking_id):

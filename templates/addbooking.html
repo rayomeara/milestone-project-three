@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{{ url_for('insert_booking') }}" method="POST" class="form-horizontal">
+	<fieldset>
+		<legend>Add Booking - Details</legend>
+		<div class="form-group">
+			<label for="inputEmail" class="col-lg-2 control-label">Name</label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" id="full_name" name="full_name">
+            </div>
+	    </div>
+        <div class="form-group">
+			<label for="inputEmail" class="col-lg-2 control-label">Country</label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" id="country_to" name="country_to" value="{{country}}" readonly></input>
+            </div>
+	    </div>
+        <div class="form-group">
+            <label for="select" class="col-lg-2 control-label">Flights</label>
+            <div class="col-lg-10">
+                <select class="form-control" id="flight_no" name="flight_no">
+                    {% for flight in flights %}
+                        <option>{{flight.flight_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="select" class="col-lg-2 control-label">Hotels</label>
+            <div class="col-lg-10">
+                <select class="form-control" id="hotel_name" name="hotel_name">
+                    {% for hotel in hotels %}
+                        <option>{{hotel.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+		<div class="form-group">
+			<div class="col-lg-10">
+				<div class="checkbox">
+                    <label>
+                        <input id="extra_baggage" name="extra_baggage" type="checkbox"> Extra Baggage
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+			<div class="col-lg-10">
+				<div class="checkbox">
+                    <label>
+                        <input id="first_class" name="first_class" type="checkbox"> Checkbox
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+	</fieldset>
+</form>
+{% endblock %}

@@ -13,25 +13,36 @@
 	<tbody>
 		{% for booking in bookings %}
 		<tr>
-			<td><a href="{{ url_for('delete_booking', booking_id=booking._id) }}" class="btn btn-warning">Delete</a></td>
+			<td><a href="{{ url_for('delete_booking', booking_id=booking._id) }}" class="btn btn-warning">Delete</a>
+			</td>
 			<td><a href="{{ url_for('edit_booking', booking_id=booking._id) }}" class="btn btn-info">Edit</a></td>
-			<td>{{booking.name}}</td>
+			<td>{{booking.full_name}}</td>
 			<td>{{booking.country_to}}</td>
 		</tr>
 		{% endfor %}
-		<tr>
-			<td><a href="{{ url_for('add_booking', country=select.value) }}" class="btn btn-warning">Add Booking</a>
-			</td>
-			<td>for</td>
-			<td>
-				<select class="form-control" id="select">
-            {% for country in countries %}
-            <option>{{country.name}}</option>
-            {% endfor %}
-        </select>
-			</td>
-		</tr>
 	</tbody>
 </table>
-
+<br/>
+<br/>
+<br/>
+<form action="{{ url_for('add_booking') }}" method="POST" class="form-horizontal">
+	<fieldset>
+		<legend>Add Booking</legend>
+		<div class="form-group">
+			<label for="select" class="col-lg-2 control-label">Select Destination</label>
+			<div class="col-lg-10">
+				<select class="form-control" name="destination" id="destination">
+                {% for country in countries %}
+                    <option>{{country.name}}</option>
+                {% endfor %}
+                </select>
+			</div>
+		</div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button type="submit" class="btn btn-success">Add</button>
+            </div>
+        </div>
+	</fieldset>
+</form>
 {% endblock %}
