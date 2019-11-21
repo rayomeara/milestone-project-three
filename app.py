@@ -34,14 +34,32 @@ def insert_booking():
 
 @app.route('/edit_booking/<booking_id>')
 def edit_booking(booking_id):
-    return render_template('editbooking.html')
+    prev_booking = mongo.db.booking.find_one({'_id': ObjectId(booking_id)})
+    print(prev_booking)
+    flights = mongo.db.flight.find({'country_to': prev_booking.country_to})
+    hotels = mongo.db.hotel.find({'country': prev_booking.country_to})
+    return render_template('editbooking.html', booking=prev_booking, flights=flights, hotels=hotels)
 
-#@app.route('/update_booking/<booking_id>', methods=["POST"])
-#def update_booking(booking_id):
+
+@app.route('/update_booking/<booking_id>', methods=["POST"])
+def update_booking(booking_id):
+    bookings = mongo.db.booking
+    bookings.update({'_id': ObjectId(booking_id)},
+        {
+            'full_name': request.form.get('full_name'),
+            'flight_no': request.form.get('flight_no'),
+            'hotel_name': request.form.get('hotel_name'),
+            'extra_baggage': request.form.get('extra_baggage'),
+            'first_class': request.form.get('first_class'),
+        })
+    return redirect(url_for('get_bookings'))
+
 
 @app.route('/delete_booking/<booking_id>')
 def delete_booking(booking_id):
-    return render_template('deletebooking.html')
+    mongo.db.booking.delete_one({'_id': ObjectId(booking_id)})
+    return redirect(url_for('get_bookings'))
+
 
 @app.route('/get_flights')
 def get_flights():

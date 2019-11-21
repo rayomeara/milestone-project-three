@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="{{ url_for('insert_booking') }}" method="POST" class="form-horizontal">
+<form action="{{ url_for('update_booking', booking_id=booking._id) }}" method="POST" class="form-horizontal">
 	<fieldset>
 		<legend>Add Booking - Details</legend>
 		<div class="form-group">
 			<label for="inputEmail" class="col-lg-2 control-label">Name</label>
 			<div class="col-lg-10">
-				<input type="text" class="form-control" id="full_name" name="full_name">
+				<input type="text" class="form-control" id="full_name" name="full_name" value="{{booking.full_name}}">
             </div>
 	    </div>
         <div class="form-group">
 			<label for="inputEmail" class="col-lg-2 control-label">Country</label>
 			<div class="col-lg-10">
-				<input type="text" class="form-control" id="country_to" name="country_to" value="{{country}}" readonly></input>
+				<input type="text" class="form-control" id="country_to" name="country_to" value="{{booking.country_to}}" readonly></input>
             </div>
 	    </div>
         <div class="form-group">
@@ -20,7 +20,11 @@
             <div class="col-lg-10">
                 <select class="form-control" id="flight_no" name="flight_no">
                     {% for flight in flights %}
+                        {% if flight.flight_no == booking.flight_no %}
+                        <option value="{{flight.flight_no}}" selected>{{flight.flight_no}}</option>
+                        {% else %}
                         <option value="{{flight.flight_no}}">{{flight.flight_no}}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -30,7 +34,11 @@
             <div class="col-lg-10">
                 <select class="form-control" id="hotel_name" name="hotel_name">
                     {% for hotel in hotels %}
+                        {% if hotel.name == booking.hotel_name %}
+                        <option value="{{hotel.name}}" selected>{{hotel.name}}</option>
+                        {% else %}
                         <option value="{{hotel.name}}">{{hotel.name}}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -39,7 +47,11 @@
 			<div class="col-lg-10">
 				<div class="checkbox">
                     <label>
-                        <input id="extra_baggage" name="extra_baggage" type="checkbox"> Extra Baggage
+                        {% if task.is_urgent %}
+                        <input id="extra_baggage" name="extra_baggage" type="checkbox" checked>
+                        {% else %}
+                        <input id="extra_baggage" name="extra_baggage" type="checkbox">Extra Baggage
+                        {% endif %}
                     </label>
                 </div>
             </div>
@@ -48,7 +60,11 @@
 			<div class="col-lg-10">
 				<div class="checkbox">
                     <label>
-                        <input id="first_class" name="first_class" type="checkbox"> First Class
+                        {% if task.is_urgent %}
+                        <input id="first_class" name="first_class" type="checkbox" checked>
+                        {% else %}
+                        <input id="first_class" name="first_class" type="checkbox">First Class
+                        {% endif %}
                     </label>
                 </div>
             </div>
