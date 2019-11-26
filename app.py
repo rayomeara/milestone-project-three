@@ -35,9 +35,9 @@ def insert_booking():
 @app.route('/edit_booking/<booking_id>')
 def edit_booking(booking_id):
     prev_booking = mongo.db.booking.find_one({'_id': ObjectId(booking_id)})
-    print(prev_booking)
-    flights = mongo.db.flight.find({'country_to': prev_booking.country_to})
-    hotels = mongo.db.hotel.find({'country': prev_booking.country_to})
+    print(prev_booking["country_to"])
+    flights = mongo.db.flight.find({'country_to': prev_booking["country_to"]})
+    hotels = mongo.db.hotel.find({'country': prev_booking["country_to"]})
     return render_template('editbooking.html', booking=prev_booking, flights=flights, hotels=hotels)
 
 
@@ -48,6 +48,7 @@ def update_booking(booking_id):
         {
             'full_name': request.form.get('full_name'),
             'flight_no': request.form.get('flight_no'),
+            'country_to': request.form.get('country_to'),
             'hotel_name': request.form.get('hotel_name'),
             'extra_baggage': request.form.get('extra_baggage'),
             'first_class': request.form.get('first_class'),
@@ -63,7 +64,45 @@ def delete_booking(booking_id):
 
 @app.route('/get_flights')
 def get_flights():
-    return render_template("flights.html")
+    return render_template("flights.html", flights=mongo.db.flight.find())
+
+
+@app.route("/add_flight")
+def add_flight():
+    return render_template('addflight.html',
+                            countries=mongo.db.country.find())
+
+
+@app.route("/insert_flight", methods=['POST'])
+def insert_flight():
+    flight = mongo.db.flight
+    flight.insert_one(request.form.to_dict())
+    return redirect(url_for('get_flights'))
+
+
+@app.route('/edit_flight/<flight_id>')
+def edit_flight(flight_id):
+    prev_flight = mongo.db.flight.find_one({'_id': ObjectId(flight_id)})
+    countries = mongo.db.country.find()
+    return render_template('editflight.html', flight=prev_flight, countries=countries)
+
+
+@app.route('/update_flight/<flight_id>', methods=["POST"])
+def update_flight(flight_id):
+    flight = mongo.db.flight
+    flight.update({'_id': ObjectId(flight_id)},
+        {
+            'flight_no': request.form.get('flight_no'),
+            'country_to': request.form.get('country_to'),
+            'seats': request.form.get('seats')
+        })
+    return redirect(url_for('get_flights'))
+
+
+@app.route('/delete_flight/<flight_id>')
+def delete_flight(flight_id):
+    mongo.db.flight.delete_one({'_id': ObjectId(flight_id)})
+    return redirect(url_for('get_flights'))
 
 
 if __name__ == '__main__':

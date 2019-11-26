@@ -2,7 +2,7 @@
 {% block content %}
 <form action="{{ url_for('update_booking', booking_id=booking._id) }}" method="POST" class="form-horizontal">
 	<fieldset>
-		<legend>Add Booking - Details</legend>
+		<legend>Edit Booking - Details</legend>
 		<div class="form-group">
 			<label for="inputEmail" class="col-lg-2 control-label">Name</label>
 			<div class="col-lg-10">
@@ -44,26 +44,26 @@
             </div>
         </div>
 		<div class="form-group">
-			<div class="col-lg-10">
+			<div class="col-lg-10 col-lg-offset-2">
 				<div class="checkbox">
                     <label>
-                        {% if task.is_urgent %}
-                        <input id="extra_baggage" name="extra_baggage" type="checkbox" checked>
+                        {% if booking.extra_baggage %}
+                        <input id="extra_baggage" name="extra_baggage" type="checkbox" checked>Extra Baggage</input>
                         {% else %}
-                        <input id="extra_baggage" name="extra_baggage" type="checkbox">Extra Baggage
+                        <input id="extra_baggage" name="extra_baggage" type="checkbox">Extra Baggage</input>
                         {% endif %}
                     </label>
                 </div>
             </div>
         </div>
         <div class="form-group">
-			<div class="col-lg-10">
+			<div class="col-lg-10 col-lg-offset-2">
 				<div class="checkbox">
                     <label>
-                        {% if task.is_urgent %}
-                        <input id="first_class" name="first_class" type="checkbox" checked>
+                        {% if booking.first_class %}
+                        <input id="first_class" name="first_class" type="checkbox" checked>First Class</input>
                         {% else %}
-                        <input id="first_class" name="first_class" type="checkbox">First Class
+                        <input id="first_class" name="first_class" type="checkbox">First Class</input>
                         {% endif %}
                     </label>
                 </div>
@@ -71,7 +71,7 @@
         </div>
         <div class="form-group">
             <div class="col-lg-10 col-lg-offset-2">
-                <button type="submit" class="btn btn-primary">Add</button>
+                <button type="submit" class="btn btn-info">Update</button>
             </div>
         </div>
 	</fieldset>
