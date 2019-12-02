@@ -105,6 +105,50 @@ def delete_flight(flight_id):
     return redirect(url_for('get_flights'))
 
 
+@app.route('/get_hotels')
+def get_hotels():
+    return render_template("hotels.html", hotels=mongo.db.hotel.find())
+
+
+@app.route("/add_hotel")
+def add_hotel():
+    return render_template('addhotel.html',
+                            countries=mongo.db.country.find())
+
+
+@app.route("/insert_hotel", methods=['POST'])
+def insert_hotel():
+    hotel = mongo.db.hotel
+    hotel.insert_one(request.form.to_dict())
+    return redirect(url_for('get_hotels'))
+
+
+@app.route('/edit_hotel/<hotel_id>')
+def edit_hotel(hotel_id):
+    prev_hotel = mongo.db.hotel.find_one({'_id': ObjectId(hotel_id)})
+    countries = mongo.db.country.find()
+    return render_template('edithotel.html', hotel=prev_hotel, countries=countries)
+
+
+@app.route('/update_hotel/<hotel_id>', methods=["POST"])
+def update_hotel(hotel_id):
+    hotel = mongo.db.hotel
+    hotel.update({'_id': ObjectId(hotel_id)},
+        {
+            'hotel_id': request.form.get('hotel_id'),
+            'hotel_name': request.form.get('hotel_name'),
+            'country': request.form.get('country'),
+            'rating': request.form.get('rating')
+        })
+    return redirect(url_for('get_hotels'))
+
+
+@app.route('/delete_hotel/<hotel_id>')
+def delete_hotel(hotel_id):
+    mongo.db.hotel.delete_one({'_id': ObjectId(hotel_id)})
+    return redirect(url_for('get_hotels'))
+
+
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
             port=int(os.environ.get('PORT')),
