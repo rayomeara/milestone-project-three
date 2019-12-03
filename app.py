@@ -1,4 +1,4 @@
-#import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
+import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
 import os
 from flask import Flask, render_template, redirect, request, url_for
 from flask_pymongo import PyMongo

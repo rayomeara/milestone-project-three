@@ -35,9 +35,9 @@
                 <select class="form-control" id="hotel_name" name="hotel_name">
                     {% for hotel in hotels %}
                         {% if hotel.name == booking.hotel_name %}
-                        <option value="{{hotel.name}}" selected>{{hotel.name}}</option>
+                        <option value="{{hotel.hotel_name}}" selected>{{hotel.hotel_name}}</option>
                         {% else %}
-                        <option value="{{hotel.name}}">{{hotel.name}}</option>
+                        <option value="{{hotel.hotel_name}}">{{hotel.hotel_name}}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
