@@ -1,3 +1,4 @@
+#import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
 import os
 from flask import Flask, render_template, redirect, request, url_for
 from flask_pymongo import PyMongo
@@ -6,7 +7,7 @@ from bson.objectid import ObjectId
 app = Flask(__name__)
 
 app.config["MONGO_DBNAME"] = "booking_db"
-app.config["MONGO_URI"] = 'mongodb+srv://root:pass@myfirstcluster-2scdt.mongodb.net/booking_db?retryWrites=true&w=majority'
+app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'ENV Value Not Loaded')
 
 mongo = PyMongo(app)
 
