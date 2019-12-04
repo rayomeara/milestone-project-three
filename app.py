@@ -1,4 +1,4 @@
-#import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
+import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
 import os
 from flask import Flask, render_template, redirect, request, url_for
 from flask_pymongo import PyMongo
@@ -20,9 +20,20 @@ def get_bookings():
 @app.route("/add_booking", methods=['POST'])
 def add_booking():
     country = request.form.get('destination')
+    flights = mongo.db.flight.find({'country_to': country})
+    seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"]})
+
+    seats_array = list(seats)
+
+    for seat in seats_array:
+        print(seat['flight_no'])
+
+    seats.rewind()
+
     return render_template('addbooking.html',
                             country=country,
-                            flights=mongo.db.flight.find({'country_to': country}),
+                            flights=flights,
+                            seats=seats,
                             hotels=mongo.db.hotel.find({'country': country}))
 
 
@@ -36,10 +47,10 @@ def insert_booking():
 @app.route('/edit_booking/<booking_id>')
 def edit_booking(booking_id):
     prev_booking = mongo.db.booking.find_one({'_id': ObjectId(booking_id)})
-    print(prev_booking["country_to"])
     flights = mongo.db.flight.find({'country_to': prev_booking["country_to"]})
+    seats = mongo.db.seat.find({'flight_no': prev_booking["flight_no"]})
     hotels = mongo.db.hotel.find({'country': prev_booking["country_to"]})
-    return render_template('editbooking.html', booking=prev_booking, flights=flights, hotels=hotels)
+    return render_template('editbooking.html', booking=prev_booking, flights=flights, seats=seats, hotels=hotels)
 
 
 @app.route('/update_booking/<booking_id>', methods=["POST"])

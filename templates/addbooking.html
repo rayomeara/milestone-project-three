@@ -26,6 +26,16 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="seat_no" class="col-lg-2 control-label">Seats</label>
+            <div class="col-lg-10">
+                <select class="form-control" id="seat_no" name="seat_no">
+                    {% for seat in seats %}
+                        <option value="{{seat.seat_no}}">{{seat.seat_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="hotel_name" class="col-lg-2 control-label">Hotels</label>
             <div class="col-lg-10">
                 <select class="form-control" id="hotel_name" name="hotel_name">
