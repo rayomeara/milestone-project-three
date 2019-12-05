@@ -21,15 +21,7 @@ def get_bookings():
 def add_booking():
     country = request.form.get('destination')
     flights = mongo.db.flight.find({'country_to': country})
-    seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"], 'booking_id': {'$exists': False}})
-
-    seats_array = list(seats)
-
-    for seat in seats_array:
-        print(seat['flight_no'])
-
-    seats.rewind()
-
+    seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"], 'booking_no': {'$exists': False}})
     return render_template('addbooking.html',
                             country=country,
                             flights=flights,
@@ -39,6 +31,15 @@ def add_booking():
 
 @app.route("/insert_booking", methods=['POST'])
 def insert_booking():
+    flight_no = request.form.get("flight_no")
+    seat_no = request.form.get("seat_no")
+    booking_no = request.form.get("booking_no")
+    seat = mongo.db.seat
+    seat.update({'seat_no': seat_no, 'flight_no': flight_no}, {
+            'booking_no': booking_no,
+            'seat_no': seat_no,
+            'flight_no': flight_no
+    })
     booking = mongo.db.booking
     booking.insert_one(request.form.to_dict())
     return redirect(url_for('get_bookings'))
@@ -48,22 +49,36 @@ def insert_booking():
 def edit_booking(booking_id):
     prev_booking = mongo.db.booking.find_one({'_id': ObjectId(booking_id)})
     flights = mongo.db.flight.find({'country_to': prev_booking["country_to"]})
-    seats = mongo.db.seat.find({'flight_no': prev_booking["flight_no"]})
+    seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"], '$or': [{'booking_no': {'$exists': False}}, {'booking_no': prev_booking['booking_no']}]})
     hotels = mongo.db.hotel.find({'country': prev_booking["country_to"]})
     return render_template('editbooking.html', booking=prev_booking, flights=flights, seats=seats, hotels=hotels)
 
 
 @app.route('/update_booking/<booking_id>', methods=["POST"])
 def update_booking(booking_id):
+    flight_no = request.form.get("flight_no")
+    seat_no = request.form.get("seat_no")
+    booking_no = request.form.get("booking_no")
+    seat = mongo.db.seat
+    seat.update({'booking_no': booking_no}, {
+            '$unset': {"booking_no": ""}
+    })
+    seat.update({'seat_no': seat_no, 'flight_no': flight_no}, {
+            'booking_no': booking_no,
+            'seat_no': seat_no,
+            'flight_no': flight_no
+    })
     bookings = mongo.db.booking
     bookings.update({'_id': ObjectId(booking_id)},
         {
+            'booking_no': request.form.get('booking_no'),
             'full_name': request.form.get('full_name'),
             'flight_no': request.form.get('flight_no'),
             'country_to': request.form.get('country_to'),
             'hotel_name': request.form.get('hotel_name'),
             'extra_baggage': request.form.get('extra_baggage'),
             'first_class': request.form.get('first_class'),
+            'seat_no': request.form.get('seat_no')
         })
     return redirect(url_for('get_bookings'))
 

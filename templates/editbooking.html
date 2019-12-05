@@ -3,6 +3,12 @@
 <form action="{{ url_for('update_booking', booking_id=booking._id) }}" method="POST" class="form-horizontal">
 	<fieldset>
 		<legend>Edit Booking - Details</legend>
+        <div class="form-group">
+			<label for="booking_no" class="col-lg-2 control-label">Booking No.</label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" id="booking_no" name="booking_no" value="{{booking.booking_no}}">
+            </div>
+	    </div>
 		<div class="form-group">
 			<label for="full_name" class="col-lg-2 control-label">Name</label>
 			<div class="col-lg-10">
