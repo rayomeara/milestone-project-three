@@ -21,7 +21,7 @@ def get_bookings():
 def add_booking():
     country = request.form.get('destination')
     flights = mongo.db.flight.find({'country_to': country})
-    seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"]})
+    seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"], 'booking_id': {'$exists': False}})
 
     seats_array = list(seats)
 
