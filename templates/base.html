@@ -42,6 +42,17 @@
         $(document).ready(function() {
           
         })
+        $(document).on('onchange', '.flight_no', funtion(){
+            $.ajax({
+                type:"POST",
+                url:"/get_seats",
+                data:$(this).val();
+            },
+            success:function (res){
+            //console.log(res);
+            },
+            )};
+        });
     </script>    
 </body>
 </html>
