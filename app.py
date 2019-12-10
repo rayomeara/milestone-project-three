@@ -1,6 +1,6 @@
 import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
 import os
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 
@@ -174,6 +174,16 @@ def update_hotel(hotel_id):
 def delete_hotel(hotel_id):
     mongo.db.hotel.delete_one({'_id': ObjectId(hotel_id)})
     return redirect(url_for('get_hotels'))
+
+
+@app.route("/get_seats")
+def get_seats():
+    flight = request.args.get('flight')
+    booking = request.args.get('booking')
+    if flight:
+        seats = mongo.db.seat.find({'flight_no': flight, '$or': [{'booking_no': {'$exists': False}}, {'booking_no': booking}]})
+        data = [{'seat_id': seat[0]} for seat in seats]
+    return jsonify(data)
 
 
 if __name__ == '__main__':
