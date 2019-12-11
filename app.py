@@ -182,7 +182,7 @@ def get_seats():
     booking = request.args.get('booking')
     if flight:
         seats = mongo.db.seat.find({'flight_no': flight, '$or': [{'booking_no': {'$exists': False}}, {'booking_no': booking}]})
-        data = [{'seat_id': seat[0]} for seat in seats]
+        data = [{'seat_no': seat[0]} for seat in seats]
     return jsonify(data)
 
 

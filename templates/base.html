@@ -43,19 +43,41 @@
           
         })
         $(function() {
-            $("#flight_no").on("change", function(event){
-            $.ajax({
-                data: {
-                box1 : $("#flight_no").val()
-                },
-                type:"POST",
-                url : "/get_seats"
-            })
-            .done(function(data){
-                console.log('Done!!')
+            var dropdown = {
+                flights: $('#flight_no'),
+                seats: $('#seat_no')
+            };
+
+            // function to call XHR and update seat dropdown
+            function updateseat() {
+                var flight = dropdown.flights.val();
+                var booking = $('#booking_no')
+                dropdown.seats.attr('disabled', 'disabled');
+                console.log(flight);
+
+                if (flight.length) {
+                    dropdown.seats.empty();
+                    $.getJSON("{{ url_for('get_seats') }}", {flight: flight, booking: booking}, function(data) {
+                        console.log(data);
+                        data.forEach(function(item) {
+                            dropdown.seats.append(
+                                $('<option>', {
+                                    value: item.seat_no,
+                                    text: item.seat_no
+                                })
+                            );
+                        });
+                        dropdown.seats.removeAttr('disabled');
+                    });
+                }
+            }
+
+            // event listener to customer dropdown change
+            dropdown.flights.on('change', function() {
+                updateseat();
             });
+
         });
-});
     </script>    
 </body>
 </html>
