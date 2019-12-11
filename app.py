@@ -111,15 +111,38 @@ def insert_flight():
 def edit_flight(flight_id):
     prev_flight = mongo.db.flight.find_one({'_id': ObjectId(flight_id)})
     countries = mongo.db.country.find()
-    return render_template('editflight.html', flight=prev_flight, countries=countries)
+    return render_template('editflight.html', flight=prev_flight, countries=countries, prev_flight_no=prev_flight['flight_no'], prev_seats=prev_flight['seats'])
 
 
 @app.route('/update_flight/<flight_id>', methods=["POST"])
 def update_flight(flight_id):
+    prev_flight = request.form.get('prev_flight_no')
+    current_flight = request.form.get('flight_no')
+    prev_seats = request.form.get('prev_seats')
+    current_seats = request.form.get('seats')
+    seats = request.form.get('seats')
+    if prev_flight != current_flight:
+        print("[" + prev_flight + "]")
+        print("[" + current_flight + "]")
+        print("flights not the same")
+        mongo.db.seat.delete_many({'flight_no': prev_flight})
+        for count in range(1, int(seats)+1):
+            mongo.db.seat.insert_one({'seat_no': count, 'flight_no': current_flight})
+    else:
+        if int(prev_seats) < int(current_seats):
+            print("more seats to add")
+            for count in range(int(prev_seats)+1, int(current_seats)+1):
+                mongo.db.seat.insert_one({'seat_no': count, 'flight_no': current_flight})
+        else:
+            if int(prev_seats) > int(current_seats):
+                print("more seats to delete")
+                for count in range(int(current_seats), int(prev_seats)-1, -1):
+                    mongo.db.seat.delete_one({'seat_no': count, 'flight_no': prev_flight})
+
     flight = mongo.db.flight
     flight.update({'_id': ObjectId(flight_id)},
         {
-            'flight_no': request.form.get('flight_no'),
+            'flight_no': current_flight,
             'country_to': request.form.get('country_to'),
             'seats': request.form.get('seats')
         })
@@ -178,11 +201,15 @@ def delete_hotel(hotel_id):
 
 @app.route("/get_seats")
 def get_seats():
+    print("get_seats hit")
     flight = request.args.get('flight')
     booking = request.args.get('booking')
     if flight:
-        seats = mongo.db.seat.find({'flight_no': flight, '$or': [{'booking_no': {'$exists': False}}, {'booking_no': booking}]})
-        data = [{'seat_no': seat[0]} for seat in seats]
+        if booking:
+            seats = mongo.db.seat.find({'flight_no': flight, '$or': [{'booking_no': {'$exists': False}}, {'booking_no': booking}]})
+        else:
+            seats = mongo.db.seat.find({'flight_no': flight, 'booking_no': {'$exists': False}})
+        data = [{'seat_no': seat['seat_no']} for seat in seats]
     return jsonify(data)
 
 

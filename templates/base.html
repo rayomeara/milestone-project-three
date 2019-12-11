@@ -51,8 +51,8 @@
             // function to call XHR and update seat dropdown
             function updateseat() {
                 var flight = dropdown.flights.val();
-                var booking = $('#booking_no')
-                dropdown.seats.attr('disabled', 'disabled');
+                var booking = $('#booking_no').val();
+                //dropdown.seats.attr('disabled', 'disabled');
                 console.log(flight);
 
                 if (flight.length) {
@@ -67,7 +67,7 @@
                                 })
                             );
                         });
-                        dropdown.seats.removeAttr('disabled');
+                        //dropdown.seats.removeAttr('disabled');
                     });
                 }
             }
