@@ -120,24 +120,21 @@ def update_flight(flight_id):
     current_flight = request.form.get('flight_no')
     prev_seats = request.form.get('prev_seats')
     current_seats = request.form.get('seats')
-    seats = request.form.get('seats')
     if prev_flight != current_flight:
-        print("[" + prev_flight + "]")
-        print("[" + current_flight + "]")
-        print("flights not the same")
         mongo.db.seat.delete_many({'flight_no': prev_flight})
-        for count in range(1, int(seats)+1):
-            mongo.db.seat.insert_one({'seat_no': count, 'flight_no': current_flight})
+        for count in range(1, int(current_seats)+1):
+            mongo.db.seat.insert_one({'seat_no': str(count), 'flight_no': current_flight})
+        mongo.db.booking.update({'flight_no': prev_flight}, {'$unset': {"flight_no": "", "seat_no": ""}})
+
     else:
         if int(prev_seats) < int(current_seats):
-            print("more seats to add")
-            for count in range(int(prev_seats)+1, int(current_seats)+1):
-                mongo.db.seat.insert_one({'seat_no': count, 'flight_no': current_flight})
+            for count in range(int(prev_seats), int(current_seats)):
+                mongo.db.seat.insert_one({'seat_no': str(count+1), 'flight_no': current_flight})
         else:
             if int(prev_seats) > int(current_seats):
-                print("more seats to delete")
-                for count in range(int(current_seats), int(prev_seats)-1, -1):
-                    mongo.db.seat.delete_one({'seat_no': count, 'flight_no': prev_flight})
+                for count in range(int(prev_seats), int(current_seats), -1):
+                    mongo.db.seat.delete_one({'seat_no': str(count), 'flight_no': prev_flight})
+                    mongo.db.booking.update({'flight_no': prev_flight, 'seat_no': str(count)}, {'$unset': {"flight_no": "", "seat_no": ""}})
 
     flight = mongo.db.flight
     flight.update({'_id': ObjectId(flight_id)},
@@ -151,7 +148,9 @@ def update_flight(flight_id):
 
 @app.route('/delete_flight/<flight_id>')
 def delete_flight(flight_id):
+    deleted_flight = mongo.db.flight.find_one({'_id': ObjectId(flight_id)})
     mongo.db.flight.delete_one({'_id': ObjectId(flight_id)})
+    mongo.db.booking.update({'flight_no': deleted_flight['flight_no']}, {'$unset': {"flight_no": "", "seat_no": ""}})
     return redirect(url_for('get_flights'))
 
 
