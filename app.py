@@ -104,6 +104,10 @@ def add_flight():
 def insert_flight():
     flight = mongo.db.flight
     flight.insert_one(request.form.to_dict())
+    seats = request.form.get('seats')
+    flight_no = request.form.get('flight_no')
+    for count in range(1, int(seats)+1):
+            mongo.db.seat.insert_one({'seat_no': str(count), 'flight_no': flight_no})
     return redirect(url_for('get_flights'))
 
 
@@ -176,16 +180,21 @@ def insert_hotel():
 def edit_hotel(hotel_id):
     prev_hotel = mongo.db.hotel.find_one({'_id': ObjectId(hotel_id)})
     countries = mongo.db.country.find()
-    return render_template('edithotel.html', hotel=prev_hotel, countries=countries)
+    return render_template('edithotel.html', hotel=prev_hotel, countries=countries, prev_hotel_name=prev_hotel['hotel_name'])
 
 
 @app.route('/update_hotel/<hotel_id>', methods=["POST"])
 def update_hotel(hotel_id):
     hotel = mongo.db.hotel
+    hotel_name = request.form.get('hotel_name')
+    prev_hotel_name = request.form.get('prev_hotel_name')
+    if hotel_name != prev_hotel_name:
+        mongo.db.booking.update({'hotel_name': hotel_name}, {'$unset': {"hotel_name": ""}})
+
     hotel.update({'_id': ObjectId(hotel_id)},
         {
             'hotel_id': request.form.get('hotel_id'),
-            'hotel_name': request.form.get('hotel_name'),
+            'hotel_name': hotel_name,
             'country': request.form.get('country'),
             'rating': request.form.get('rating')
         })
@@ -194,13 +203,14 @@ def update_hotel(hotel_id):
 
 @app.route('/delete_hotel/<hotel_id>')
 def delete_hotel(hotel_id):
+    deleted_hotel = mongo.db.hotel.find_one({'_id': ObjectId(hotel_id)})
     mongo.db.hotel.delete_one({'_id': ObjectId(hotel_id)})
+    mongo.db.booking.update({'hotel_name': deleted_hotel['hotel_name']}, {'$unset': {"hotel_name": ""}})
     return redirect(url_for('get_hotels'))
 
 
 @app.route("/get_seats")
 def get_seats():
-    print("get_seats hit")
     flight = request.args.get('flight')
     booking = request.args.get('booking')
     if flight:

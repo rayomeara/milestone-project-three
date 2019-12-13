@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="seat_no" class="col-lg-2 control-label">Flights</label>
+            <label for="seat_no" class="col-lg-2 control-label">Seat No.</label>
             <div class="col-lg-10">
                 <select class="form-control" id="seat_no" name="seat_no">
                     {% for seat in seats %}
@@ -54,7 +54,7 @@
             <div class="col-lg-10">
                 <select class="form-control" id="hotel_name" name="hotel_name">
                     {% for hotel in hotels %}
-                        {% if hotel.name == booking.hotel_name %}
+                        {% if hotel.hotel_name == booking.hotel_name %}
                         <option value="{{hotel.hotel_name}}" selected>{{hotel.hotel_name}}</option>
                         {% else %}
                         <option value="{{hotel.hotel_name}}">{{hotel.hotel_name}}</option>
