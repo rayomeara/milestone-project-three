@@ -1,5 +1,8 @@
 import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
+import datetime
 import os
+import random
+
 from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -19,6 +22,10 @@ def get_bookings():
 
 @app.route("/add_booking", methods=['POST'])
 def add_booking():
+    rand_num = random.randrange(1, 1000)
+    current_date = datetime.datetime.now()
+    date_string = current_date.strftime("%y%m%d%H%M%S")
+    booking_no = date_string + str(rand_num)
     country = request.form.get('destination')
     flights = mongo.db.flight.find({'country_to': country})
     seats = mongo.db.seat.find({'flight_no': flights[0]["flight_no"], 'booking_no': {'$exists': False}})
@@ -26,6 +33,7 @@ def add_booking():
                             country=country,
                             flights=flights,
                             seats=seats,
+                            booking_no=booking_no,
                             hotels=mongo.db.hotel.find({'country': country}))
 
 
