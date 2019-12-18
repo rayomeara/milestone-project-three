@@ -1,4 +1,4 @@
-import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
+#import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
 import datetime
 import os
 import random
