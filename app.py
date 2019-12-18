@@ -1,8 +1,5 @@
 #import env # COMMENT THIS OUT WHEN DEPLOYING TO HEROKU
-<<<<<<< HEAD
 import datetime
-=======
->>>>>>> 93844cc1e4ae3ac603df95a40c8aaafb27fe98d1
 import os
 import random
 
