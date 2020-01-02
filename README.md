@@ -6,6 +6,13 @@ and hotels as needed.
 ---
 ### UX
 
+When it came to doing this project, I had the idea of the travel agent because of
+the different data they have to capture. It striked me as being one of great interest
+due to the seat allocation and how a bookings app would handle it. So the application 
+should handle different scenarios like the person wanted to book their holiday, 
+how flights get handled when there are flight additions and cancellations, and people
+who just want to make changes to bookings such as where they stay or cancel the flight.
+
 The website opens into the bookings list. This is also the targer for the main
 link on the top menu. There are also links on the top menu that point to the list
 of flights and hotels.
@@ -82,6 +89,12 @@ by checking that a new booking has access to seats deallocated by a booking
 and that seats now allocated were not selectable from the dropdown. This was also
 thoroughly checked for changing flights which caused the jsonify update to trigger
 on the seats dropdown.
+
+Also, the user stories mentioned in the UX station were all tested for. So for any
+new flights added, they were checked to having been added and their seat allocation
+created. The same went for flights deleted and that bookings once assigned to them
+were removed. This unallocated seat was also tested to appear for any new bookings 
+that are added in the future. Bookings to various destinations have all been tested.
 
 ---
 ### Deployment
