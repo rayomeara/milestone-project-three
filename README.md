@@ -103,10 +103,33 @@ The site is currently being hosted at:
 
 https://rom-travel-application.herokuapp.com/
 
-It is deployed to the site via the github repos. To deploy to the website, run:
+It is deployed to the site via the github repos. The application was initially
+created on the heroku site named 'rom-travel-application' with the config 
+variables of 'IP' (0,0,0,0), PORT (5000) and the MONGO_URI pointing to the MongoDB
+for this application.
 
-get remote add heroku https://git.heroku.com/rom-travel-application.git
-git push heroku master
+The application is linked to the heroku application using the following command:
+
+git remote add heroku https://git.heroku.com/rom-travel-application.git
+
+To allow the app to be deployed and recognized as a python app by heroku, a 
+requirements.txt file is created using:
+
+pip3 freeze --local > requirements.txt
+
+The deployment will fail if this file is not created. To allow the application to 
+run on Heroku, a Procfile needs to be created. This is done using:
+
+echo web: python app.py > Procfile
+
+Now the application can be deployed. To push the code from our app to heroku, run:
+
+git push -u heroku master
+
+To ensure that a web process is running by Heroku, run the following:
+
+heroku ps:scale web=1
+
 
 To run locally, clone the repository using the command:
 
