@@ -21,6 +21,10 @@ Each of the options allows for items to be deleted or edited. Flights and hotels
 can also be added and bookings are added by first indicating the destination of 
 choice from the dropdown.
 
+Wireframes from the project can be found in the 'wireframes' folder.
+
+https://github.com/rayomeara/milestone-project-three/tree/master/wireframes
+
 ---
 ### Technologies
 
