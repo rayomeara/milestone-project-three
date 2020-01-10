@@ -78,6 +78,10 @@ preventing the booking from being deleted would be an option or returning a
 warning to the user that because this data is being removed, a potential number
 of bookings need to be adjusted and assigned a new flight/hotel.
 
+Also, it would be a nice to have if the site handled more than one individual
+per booking. At the moment the site is targeted to take one persons details and
+their individual booking information. 
+
 ---
 ### Testing
 
